@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'MQ_users',
     'MQ_diving_logs',
     'MQ_media_gallery',
+    'MQ_messages'
 ]
 
 MIDDLEWARE = [
