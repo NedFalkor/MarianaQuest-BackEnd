@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class DivingLog(models.Model):
     # Paramètres
     diveNumber = models.IntegerField(null=True, blank=True)

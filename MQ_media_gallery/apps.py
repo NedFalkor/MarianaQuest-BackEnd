@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MqUsersConfig(AppConfig):
+class MqMediaGalleryConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'MQ_users'
+    name = 'MQ_media_gallery'

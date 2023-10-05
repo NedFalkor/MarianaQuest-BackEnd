@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'durationfield',
     'rest_framework',
     'MQ_users',
-    'MQ_diving_logs'
+    'MQ_diving_logs',
+    'MQ_media_gallery',
 ]
 
 MIDDLEWARE = [
