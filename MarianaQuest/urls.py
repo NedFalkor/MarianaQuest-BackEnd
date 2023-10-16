@@ -1,7 +1,12 @@
-from django.urls import path
-from MQ_users.viewsets.RegisterUserViewSet import RegisterUser
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from MQ_users.viewsets.RegisterUserViewSet import RegisterUserViewSet
+
+router = DefaultRouter()
+router.register(r'users', RegisterUserViewSet, basename='registered')
 
 urlpatterns = [
-    # ... your other url patterns
-    path('register/', RegisterUser.as_view(), name='register_user'),
+    path('', include(router.urls)),
+    path('auth/', include('djoser.urls.jwt')),
 ]
