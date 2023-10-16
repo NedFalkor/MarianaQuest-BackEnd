@@ -6,6 +6,7 @@ class DivingLog(models.Model):
     dive_number = models.IntegerField(null=True, blank=True, verbose_name="Dive Number")
     dive_date = models.DateField(null=True, blank=True, verbose_name="Dive Date")
     dive_site = models.CharField(max_length=255, blank=True, verbose_name="Dive Site")
+    objects = models.Manager()
 
     ENVIRONMENT_CHOICES = [
         ('sea', 'Sea'),
@@ -65,4 +66,3 @@ class DivingLog(models.Model):
 
     def __str__(self):
         return f"Dive {self.dive_number or 'Unknown'} at {self.dive_site or 'Unknown Site'}"
-
