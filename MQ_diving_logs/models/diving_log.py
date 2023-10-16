@@ -1,8 +1,10 @@
 from django.db import models
 
+from MQ_users.models.custom_user import CustomUser
+
 
 class DivingLog(models.Model):
-    # Paramètres
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     dive_number = models.IntegerField(null=True, blank=True, verbose_name="Dive Number")
     dive_date = models.DateField(null=True, blank=True, verbose_name="Dive Date")
     dive_site = models.CharField(max_length=255, blank=True, verbose_name="Dive Site")
@@ -65,4 +67,11 @@ class DivingLog(models.Model):
     stamp_preview = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp Preview")
 
     def __str__(self):
-        return f"Dive {self.dive_number or 'Unknown'} at {self.dive_site or 'Unknown Site'}"
+        if self.user:
+            return (f"Dive {self.dive_number or 'Unknown'} "
+                    f"at {self.dive_site or 'Unknown Site'} "
+                    f"by {self.user.username or 'Unknown User'}")
+        else:
+            return (f"Dive {self.dive_number or 'Unknown'} "
+                    f"at {self.dive_site or 'Unknown Site'} "
+                    f"by Unknown User")

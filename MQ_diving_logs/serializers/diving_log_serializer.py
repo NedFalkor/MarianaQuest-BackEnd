@@ -10,4 +10,3 @@ class DivingLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = DivingLog
         fields = '__all__'
-

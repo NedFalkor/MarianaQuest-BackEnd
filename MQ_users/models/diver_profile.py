@@ -29,4 +29,4 @@ class DiverProfile(models.Model):
     emergency_contact_email = models.EmailField()
 
     def __str__(self):
-        return f"Dive of {self.user.username} - {self.logbook_number}"
+        return f"Dive of {self.user.username} - {self.dive_number}"
