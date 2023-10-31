@@ -2,18 +2,16 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
-from MQ_users.serializers import SubscriptionUserSerializer
+
+from MQ_users.serializers.AuthUserSerializer import AuthUserSerializer
 
 
-class SubscriptionUserViewSet(viewsets.ViewSet):
-    serializer_class = SubscriptionUserSerializer
-
-    def get_serializer(self, *args, **kwargs):
-        return SubscriptionUserSerializer(*args, **kwargs)
+class AuthUserViewSet(viewsets.ViewSet):
+    serializer_class = AuthUserSerializer
 
     @action(detail=False, methods=['POST'])
     def login(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = AuthUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(email=serializer.validated_data['email'], password=serializer.validated_data['password'])
         if user:

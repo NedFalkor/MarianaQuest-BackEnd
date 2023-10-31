@@ -1,6 +1,5 @@
 from django.db import models
-
-from MQ_users.models.custom_user import CustomUser
+from MQ_users.models import CustomUser
 
 
 class DivingLog(models.Model):
@@ -63,15 +62,34 @@ class DivingLog(models.Model):
     observations = models.TextField(blank=True, verbose_name="Observations")
 
     # Signature & Stamp
-    signature_data = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature Data")
-    stamp_preview = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp Preview")
+    signature = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature")
+    stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
+
+    # Statut et validation
+    STATUS_CHOICES = [
+        ('EN_ATTENTE', 'En attente'),
+        ('VALIDÉ', 'Validé'),
+        ('REFUSÉ', 'Refusé'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='EN_ATTENTE')
+    validated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL,
+                                     related_name='validated_dives')
 
     def __str__(self):
-        if self.user:
-            return (f"Dive {self.dive_number or 'Unknown'} "
-                    f"at {self.dive_site or 'Unknown Site'} "
-                    f"by {self.user.username or 'Unknown User'}")
-        else:
-            return (f"Dive {self.dive_number or 'Unknown'} "
-                    f"at {self.dive_site or 'Unknown Site'} "
-                    f"by Unknown User")
+        return (f"Dive {self.dive_number or 'Unknown'} at {self.dive_site or 'Unknown Site'} "
+                f"by {self.user.username if hasattr(self.user, 'username') else 'Unknown User'}")
+
+
+class InstructorComment(models.Model):
+    diving_log = models.ForeignKey(DivingLog, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    comment = models.TextField(verbose_name="Commentaire")
+    comment_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-comment_date']
+
+    def __str__(self):
+        return (
+            f"Comment by {self.instructor.username if hasattr(self.instructor, 'username') else 'Unknown Instructor'}"
+            f" on {self.comment_date}")

@@ -10,3 +10,11 @@ class DivingLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = DivingLog
         fields = '__all__'
+
+    def validate_status(self, value):
+        # Si c'est une création (l'instance n'existe pas encore)
+        if not self.instance:
+            if value != 'EN_ATTENTE':
+                raise serializers.ValidationError("Le statut initial doit être 'EN_ATTENTE'")
+        return value
+

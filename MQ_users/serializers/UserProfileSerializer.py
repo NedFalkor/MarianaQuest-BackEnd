@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from MQ_users.models import CustomUser
+
+from MQ_users.models.custom_user import CustomUser
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
