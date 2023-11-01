@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+import bcrypt
 
 
 class CustomUserManager(BaseUserManager):
@@ -14,8 +15,9 @@ class CustomUserManager(BaseUserManager):
         if username:
             extra_fields["username"] = username
 
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         user = self.model(**extra_fields)
-        user.set_password(password)
+        user.password = hashed_password.decode('utf-8')  # stocker le hash comme string
         user.save(using=self._db)
         return user
 
