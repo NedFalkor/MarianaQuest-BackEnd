@@ -3,19 +3,23 @@ from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('L’adresse e-mail est obligatoire')
-        if not username:
-            raise ValueError('le nom d’utilisateur est obligatoire')
+    def create_user(self, email=None, username=None, password=None, **extra_fields):
+        if email is None and username is None:
+            raise ValueError('L’un des champs (email ou nom d’utilisateur) est obligatoire.')
 
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **extra_fields)
+        if email:
+            email = self.normalize_email(email)
+            extra_fields["email"] = email
+
+        if username:
+            extra_fields["username"] = username
+
+        user = self.model(**extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(self, email=None, username=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -24,7 +28,7 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(username, email, password, **extra_fields)
+        return self.create_user(email=email, username=username, password=password, **extra_fields)
 
 
 class CustomUser(AbstractUser):

@@ -29,10 +29,8 @@ class DiverProfile(models.Model):
     mobile = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField()
 
-    emergency_contact = models.ForeignKey('EmergencyContact', on_delete=models.SET_NULL, null=True,
+    emergency_contact = models.ForeignKey('EmergencyContact', on_delete=models.CASCADE, null=True,
                                           blank=True)
 
     def __str__(self):
-        return f"Profile of diver {self.user.username} - Logbook No. {self.logbook_number}"
-
-
+        return f"Profile of diver {self.user.username if self.user else 'unknown'} - Logbook No. {self.logbook_number}"
