@@ -5,10 +5,14 @@ from MQ_users.models import CustomUser
 from MQ_users.serializers.RegisterUserSerializer import RegisterUserSerializer
 
 
-class RegisterUserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class RegisterUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterUserSerializer
     permission_classes = [AllowAny]
+
+    @classmethod
+    def get_extra_actions(cls):
+        return []
 
     def create(self, request, *args, **kwargs):
         email_or_username = request.data.get('email_or_username')

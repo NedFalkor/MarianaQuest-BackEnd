@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'MQ_users',
     'MQ_diving_logs',
 ]
@@ -58,7 +60,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'MarianaQuest.urls'
 
@@ -101,9 +107,14 @@ AUTH_PASSWORD_VALIDATORS = [
         }
     },
     {
-        'NAME': 'MQ_users.validators.CharacterTypesValidator',
+        'NAME': 'MQ_users.validators.validate_character_types',
+        'OPTIONS': {
+            'min_length': 12,
+        },
     },
+
 ]
+
 
 AUTH_USER_MODEL = 'MQ_users.CustomUser'
 

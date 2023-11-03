@@ -1,12 +1,9 @@
+from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-
-from MQ_users.viewsets.RegisterUserViewSet import RegisterUserViewSet
-
-router = DefaultRouter()
-router.register(r'users', RegisterUserViewSet, basename='registered')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('auth/', include('djoser.urls.jwt')),
+    # ... vos autres modèles d'URL si vous en avez
+    path('admin/', admin.site.urls),
+    path('', include('MQ_users.urls')),  # Redirigez la racine vers les URLs de MQ_users
+    path('', include('MQ_diving_logs.urls')),  # Redirigez également la racine vers les URLs de MQ_diving_logs
 ]
