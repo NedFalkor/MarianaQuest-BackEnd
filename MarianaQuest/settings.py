@@ -106,15 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
             'min_length': 12,
         }
     },
-    {
-        'NAME': 'MQ_users.validators.validate_character_types',
-        'OPTIONS': {
-            'min_length': 12,
-        },
-    },
-
 ]
-
 
 AUTH_USER_MODEL = 'MQ_users.CustomUser'
 

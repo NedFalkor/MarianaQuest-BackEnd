@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
     ROLE_CHOICES = [
         ('PLONGEUR', 'Plongeur'),
         ('FORMATEUR', 'Formateur'),
+        ('ADMIN', 'Admin'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='PLONGEUR')
 
