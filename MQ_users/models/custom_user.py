@@ -50,3 +50,15 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+# Nouveau modèle pour la palanquée (Dive Group)
+class DiveGroup(models.Model):
+    group_number = models.IntegerField(unique=True, verbose_name="Group Number")
+    leader = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="led_dive_groups",
+                               verbose_name="Group Leader")
+    members = models.ManyToManyField(CustomUser, related_name="dive_groups", verbose_name="Group Members")
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name="Created On")
+
+    def __str__(self):
+        return f"Group {self.group_number} led by {self.leader.username}"

@@ -50,15 +50,28 @@ class DivingLog(models.Model):
     air_temperature = models.FloatField(null=True, blank=True, verbose_name="Air Temperature")
     water_temperature = models.FloatField(null=True, blank=True, verbose_name="Water Temperature")
 
+    VISIBILITY_CHOICES = [
+        ('faible', 'Faible'),
+        ('moyenne', 'Moyenne'),
+        ('bonne', 'Bonne'),
+    ]
+    visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, blank=True, verbose_name="Visibility")
+
+    CURRENT_CHOICES = [
+        ('faible', 'Faible'),
+        ('moyen', 'Moyen'),
+        ('fort', 'Fort'),
+    ]
+    current = models.CharField(max_length=10, choices=CURRENT_CHOICES, blank=True, verbose_name="Current")
+
     WEATHER_CHOICES = [
-        ('sun', 'Sunny'),
-        ('cloud', 'Cloudy'),
-        ('rain', 'Rain'),
-        ('downpour', 'Downpour'),
+        ('soleil', 'Soleil'),
+        ('nuage', 'Nuage'),
+        ('pluie', 'Pluie'),
+        ('averse', 'Averse')
     ]
     weather = models.CharField(max_length=10, choices=WEATHER_CHOICES, blank=True, verbose_name="Weather")
-    visibility = models.CharField(max_length=255, blank=True, verbose_name="Visibility")
-    current = models.CharField(max_length=255, blank=True, verbose_name="Current")
+
     observations = models.TextField(blank=True, verbose_name="Observations")
 
     # Signature & Stamp
