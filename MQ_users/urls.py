@@ -10,4 +10,5 @@ router.register(r'auth', AuthUserViewSet, basename='auth')
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls.jwt')),
+    path('api/register/', RegisterUserViewSet.as_view({'post': 'create'}), name='register'),
 ]
