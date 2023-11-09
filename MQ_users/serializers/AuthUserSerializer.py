@@ -3,18 +3,26 @@ from rest_framework import serializers
 
 
 class AuthUserSerializer(serializers.Serializer):
-    emailOrUsername = serializers.CharField()
+    email = serializers.EmailField(required=True)  # Set required to False if it can be optional
+    username = serializers.CharField(required=True)  # Set required to False if it can be optional
     password = serializers.CharField(style={'input_type': 'password'})
 
     def validate(self, attrs):
-        # Tentez d'authentifier par e-mail
-        user = authenticate(email=attrs['emailOrUsername'], password=attrs['password'])
+        email = attrs.get('email')
+        username = attrs.get('username')
+        password = attrs.get('password')
 
-        # Si l'authentification par e-mail échoue, essayez par nom d'utilisateur
+        # The user can login either with email or username
+        if email:
+            user = authenticate(email=email, password=password)
+        elif username:
+            user = authenticate(username=username, password=password)
+        else:
+            raise serializers.ValidationError("Email or username must be provided.")
+
         if not user:
-            user = authenticate(username=attrs['emailOrUsername'], password=attrs['password'])
+            raise serializers.ValidationError("Unable to log in with provided credentials.")
 
-        if not user:
-            raise serializers.ValidationError("Les informations d'identification fournies sont incorrectes.")
-
+        # Attach the user to the serializer's validated data
+        attrs['user'] = user
         return attrs

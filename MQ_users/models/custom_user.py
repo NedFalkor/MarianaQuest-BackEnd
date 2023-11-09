@@ -1,38 +1,36 @@
+from AptUrl.Helpers import _
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email=None, username=None, password=None, **extra_fields):
-        if email is None and username is None:
-            raise ValueError('L’un des champs (email ou nom d’utilisateur) est obligatoire.')
+    def create_user(self, email, username, password=None, **extra_fields):
+        if not email:
+            raise ValueError(_('The Email field must be set'))
+        if not username:
+            raise ValueError(_('The Username field must be set'))
 
-        if email:
-            email = self.normalize_email(email)
-            extra_fields["email"] = email
-
-        if username:
-            extra_fields["username"] = username
-
-        user = self.model(**extra_fields)
+        email = self.normalize_email(email)
+        user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, username=None, password=None, **extra_fields):
+    def create_superuser(self, email, username, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if not extra_fields.get('is_staff'):
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if not extra_fields.get('is_superuser'):
+            raise ValueError(_('Superuser must have is_superuser=True.'))
 
-        return self.create_user(email=email, username=username, password=password, **extra_fields)
+        return self.create_user(email, username, password, **extra_fields)
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
+    # Assume we want to keep the unique email field
+    email = models.EmailField(_('email address'), unique=True)
 
     # Roles
     ROLE_CHOICES = [
@@ -45,11 +43,12 @@ class CustomUser(AbstractUser):
     # Définition du manager personnalisé pour ce modèle
     objects = CustomUserManager()
 
+    # Utilisez à la fois l'email et le nom d'utilisateur pour l'authentification
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'role']
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.username
+        return f"{self.username} ({self.email})"
 
 
 # Nouveau modèle pour la palanquée (Dive Group)
