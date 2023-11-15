@@ -9,7 +9,7 @@ router_users.register(r'users', RegisterUserViewSet, basename='registered')
 router_users.register(r'auth', AuthUserViewSet, basename='auth')
 
 router_diving_logs = DefaultRouter()
-router_diving_logs.register(r'diving-logs', DivingLogViewSet, basename='diving-log')  # Assurez-vous d'utiliser le bon nom de viewset
+router_diving_logs.register(r'diving-logs', DivingLogViewSet, basename='diving-log')
 
 urlpatterns = [
     path('', include(router_users.urls)),
