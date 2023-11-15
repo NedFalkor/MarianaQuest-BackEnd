@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from MQ_users.models.diver_profile import DiverProfile
-from MQ_users.serializers.DiverProfileSerializer import DiverProfileSerializer
+from MQ_users.serializers.diver_profile_serializer import DiverProfileSerializer
 
 
 class DiverProfileViewSet(viewsets.ModelViewSet):

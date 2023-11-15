@@ -21,8 +21,20 @@ class DivingLog(models.Model):
     decompression_stop = models.CharField(max_length=255, blank=True, verbose_name="Decompression Stop")
 
     # Equipement
-    bottle_type = models.IntegerField(null=True, blank=True, verbose_name="Bottle Type")
-    wet_suit = models.CharField(max_length=255, blank=True, verbose_name="Wet Suit")
+    BOTTLE_TYPE_CHOICES = [
+        ('6l', '6 Liters'),
+        ('12l', '12 Liters'),
+        ('15l', '15 Liters'),
+    ]
+    bottle_type = models.CharField(max_length=3, choices=BOTTLE_TYPE_CHOICES, blank=True, verbose_name="Bottle Type")
+
+    WET_SUIT_CHOICES = [
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+        ('XL', 'Extra Large'),
+    ]
+    wet_suit = models.CharField(max_length=2, choices=WET_SUIT_CHOICES, blank=True, verbose_name="Wet Suit")
     ballast = models.CharField(max_length=255, blank=True, verbose_name="Ballast")
 
     DIVE_TYPE_CHOICES = [
@@ -71,6 +83,12 @@ class DivingLog(models.Model):
         ('averse', 'Averse')
     ]
     weather = models.CharField(max_length=10, choices=WEATHER_CHOICES, blank=True, verbose_name="Weather")
+    WIND_CHOICES = [
+        ('faible', 'Faible'),
+        ('moyen', 'Moyen'),
+        ('fort', 'Fort'),
+    ]
+    wind = models.CharField(max_length=10, choices=WIND_CHOICES, blank=True, verbose_name="Wind")
 
     observations = models.TextField(blank=True, verbose_name="Observations")
 

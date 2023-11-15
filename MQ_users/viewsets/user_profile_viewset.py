@@ -1,7 +1,7 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from MQ_users.models import CustomUser
-from MQ_users.serializers.UserProfileSerializer import UserProfileSerializer
+from MQ_users.serializers.user_profile_serializer import UserProfileSerializer
 
 
 class UserProfileViewSet(mixins.RetrieveModelMixin,

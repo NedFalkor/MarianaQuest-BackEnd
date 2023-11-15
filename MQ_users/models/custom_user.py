@@ -31,7 +31,6 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     # Assume we want to keep the unique email field
     email = models.EmailField(_('email address'), unique=True)
-
     # Roles
     ROLE_CHOICES = [
         ('PLONGEUR', 'Plongeur'),

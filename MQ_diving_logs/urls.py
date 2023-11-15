@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from MQ_users.viewsets.RegisterUserViewSet import RegisterUserViewSet
-from MQ_users.viewsets.AuthUserViewSet import AuthUserViewSet
+from MQ_users.viewsets.register_user_viewset import RegisterUserViewSet
+from MQ_users.viewsets.auth_user_viewset import AuthUserViewSet
 from MQ_diving_logs.viewsets.diving_log_viewset import DivingLogViewSet  # Assurez-vous d'importer le viewset correct
 
 router_users = DefaultRouter()

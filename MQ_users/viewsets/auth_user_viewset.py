@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
 
-from MQ_users.serializers.AuthUserSerializer import AuthUserSerializer
+from MQ_users.serializers.auth_user_serializer import AuthUserSerializer
 from django.core.exceptions import ValidationError
 
 

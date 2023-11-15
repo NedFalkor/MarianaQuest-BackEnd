@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from MQ_users.models import CustomUser
-from MQ_users.serializers import RegisterUserSerializer
+from MQ_users.serializers.register_user_serializer import RegisterUserSerializer
 
 
 class RegisterUserViewSet(viewsets.ModelViewSet):

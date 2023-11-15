@@ -9,7 +9,6 @@ class DivingLogViewSet(viewsets.ModelViewSet):
     serializer_class = DivingLogSerializer
 
     def create(self, request, *args, **kwargs):
-        # Mettre le statut par défaut à EN_ATTENTE lors de la création
         request.data['status'] = 'EN_ATTENTE'
 
         serializer = self.get_serializer(data=request.data)
@@ -40,7 +39,6 @@ class DivingLogViewSet(viewsets.ModelViewSet):
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        # Si ce n'est pas un formateur, refuser
         return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "Permission refusée."})
 
     def list(self, request, *args, **kwargs):

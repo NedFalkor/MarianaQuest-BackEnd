@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'MQ_users.CustomUser'
 
 AUTHENTICATION_BACKENDS = [
-    'MQ_users.backends.EmailOrUsernameModelBackend',
+    'MQ_users.backends.EmailAndUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
