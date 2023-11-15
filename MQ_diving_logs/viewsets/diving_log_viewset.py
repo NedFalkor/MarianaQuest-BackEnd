@@ -1,6 +1,7 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from MQ_diving_logs.models.diving_log import DivingLog
+from MQ_diving_logs.permissions.is_diver_permission import IsDiver
 from MQ_diving_logs.serializers.diving_log_serializer import DivingLogSerializer
 
 
@@ -8,38 +9,36 @@ class DivingLogViewSet(viewsets.ModelViewSet):
     queryset = DivingLog.objects.all()
     serializer_class = DivingLogSerializer
 
-    def create(self, request, *args, **kwargs):
-        request.data['status'] = 'EN_ATTENTE'
+    def get_permissions(self):
+        if self.action in ['create']:
+            return [permissions.IsAuthenticated(), IsDiver()]
+        return [permissions.IsAuthenticated()]
 
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        # Lors de la création, le statut est automatiquement mis à 'EN_ATTENTE'
+        request.data['status'] = 'EN_ATTENTE'
+        return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         user = request.user
+        instance = self.get_object()
 
-        if hasattr(user, 'role') and user.role == 'FORMATEUR':
-            instance = self.get_object()
-            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        # Seul un formateur peut changer le statut d'un DivingLog
+        if hasattr(user, 'role') and user.role != 'FORMATEUR':
+            return Response(status=status.HTTP_403_FORBIDDEN,
+                            data={"message": "Seuls les formateurs peuvent modifier le statut."})
 
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(serializer.data)
-
-        # Si ce n'est pas un formateur ou si la validation échoue, refuser
-        return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "Permission refusée."})
+        return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         user = request.user
 
-        if hasattr(user, 'role') and user.role == 'FORMATEUR':
-            instance = self.get_object()
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        # Seul un formateur peut supprimer un DivingLog
+        if hasattr(user, 'role') and user.role != 'FORMATEUR':
+            return Response(status=status.HTTP_403_FORBIDDEN,
+                            data={"message": "Seuls les formateurs peuvent supprimer le journal."})
 
-        return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "Permission refusée."})
+        return super().destroy(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

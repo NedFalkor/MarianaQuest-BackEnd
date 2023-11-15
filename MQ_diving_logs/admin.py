@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from MQ_diving_logs.models.diving_log import DivingLog, InstructorComment
+from MQ_diving_logs.models.diving_log import DivingLog
+from MQ_diving_logs.models.instructor_comment import InstructorComment
 
 
 @admin.register(DivingLog)
