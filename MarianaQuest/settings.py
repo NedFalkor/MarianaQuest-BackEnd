@@ -9,14 +9,16 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
+from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+dotenv_path = BASE_DIR / '.env'
+config = Config(RepositoryEnv(dotenv_path))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-nef59@!q2@)o4_*gg^y7^!)fo@xg2c=tj7pg9fzwz$4=2rapri'
@@ -91,10 +93,19 @@ WSGI_APPLICATION = 'MarianaQuest.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'Medias')
+MEDIA_URL = '/Medias/'
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -105,6 +116,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'OPTIONS': {
             'min_length': 4,
         }
+    },
+{
+        'NAME': 'MQ_users.validators.validate_character_types',  # Assurez-vous que le chemin est correct
     },
 ]
 

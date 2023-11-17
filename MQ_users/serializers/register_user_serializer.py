@@ -19,26 +19,21 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['email', 'username', 'password', 'confirm_password', 'role']
-        # Removed the line that disables unique validator for username
-
-    def validate_email(self, value):
-        # Check if the email is already in use.
-        if value and CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Un utilisateur avec cet e-mail existe déjà.")
-        return value
-
-    def validate_username(self, value):
-        # Check if the username is already in use.
-        if value and CustomUser.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Un utilisateur avec ce nom d'utilisateur existe déjà.")
-        return value
 
     def validate(self, data):
-        # Check if either email or username is provided
+        # Assurez-vous qu'au moins l'email ou le nom d'utilisateur est fourni
         if not data.get('email') and not data.get('username'):
             raise serializers.ValidationError("Un e-mail ou un nom d'utilisateur doit être fourni.")
 
-        # Check if passwords match.
+        # Validez l'unicité de l'email et du nom d'utilisateur si fournis
+        email = data.get('email')
+        username = data.get('username')
+        if email and CustomUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"email": "Un utilisateur avec cet e-mail existe déjà."})
+        if username and CustomUser.objects.filter(username=username).exists():
+            raise serializers.ValidationError({"username": "Un utilisateur avec ce nom d'utilisateur existe déjà."})
+
+        # Vérifiez si les mots de passe correspondent
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "Les mots de passe ne correspondent pas."})
 
@@ -48,8 +43,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         validated_data.pop('confirm_password')
         password = validated_data.pop('password')
 
-        with transaction.atomic():  # Ensure the database operation is atomic
-            # Create the user with both email and username if provided
+        with transaction.atomic():
+            # Créez l'utilisateur avec l'email et/ou le nom d'utilisateur
             user = CustomUser.objects.create_user(**validated_data)
             user.set_password(password)
             user.save()
