@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from MQ_users.models.custom_user import CustomUser
 
+
 class RegisterUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False)
     username = serializers.CharField(required=False)
