@@ -128,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'MQ_users.validators.CharacterTypeValidator',  # Updated path
+        'NAME': 'MQ_users.validators.CharacterTypeValidator',
     },
 ]
 
