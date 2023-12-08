@@ -1,12 +1,14 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from MQ_diving_logs.models.instructor_comment import InstructorComment
+from MQ_diving_logs.permissions.is_instructor_permission import IsInstructor
 from MQ_diving_logs.serializers.instructor_comment_serializer import InstructorCommentSerializer
 
 
 class InstructorCommentViewSet(viewsets.ModelViewSet):
     queryset = InstructorComment.objects.all()
     serializer_class = InstructorCommentSerializer
+    permission_classes = [IsInstructor]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -17,6 +19,10 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+        # Vérifiez si l'utilisateur actuel est l'instructeur qui a créé le commentaire
+        if instance.instructor != request.user:
+            return Response({"error": "Not allowed to update this comment"}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -25,6 +31,10 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        # Vérifiez si l'utilisateur actuel est l'instructeur qui a créé le commentaire
+        if instance.instructor != request.user:
+            return Response({"error": "Not allowed to delete this comment"}, status=status.HTTP_403_FORBIDDEN)
+
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

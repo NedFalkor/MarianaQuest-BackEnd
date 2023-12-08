@@ -15,6 +15,11 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
         # S'assurer que l'utilisateur ne peut accéder qu'à son propre profil
         return CustomUser.objects.filter(pk=self.request.user.pk)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = self.get_serializer(user)
