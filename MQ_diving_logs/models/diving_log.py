@@ -63,30 +63,32 @@ class DivingLog(models.Model):
     water_temperature = models.FloatField(null=True, blank=True, verbose_name="Water Temperature")
 
     VISIBILITY_CHOICES = [
-        ('faible', 'Faible'),
-        ('moyenne', 'Moyenne'),
-        ('bonne', 'Bonne'),
+        ('bad', 'Bad'),
+        ('medium', 'Medium'),
+        ('good', 'Good'),
     ]
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, blank=True, verbose_name="Visibility")
 
     CURRENT_CHOICES = [
-        ('faible', 'Faible'),
-        ('moyen', 'Moyen'),
-        ('fort', 'Fort'),
+        ('none', 'None'),
+        ('weak', 'Weak'),
+        ('medium', 'Medium'),
+        ('strong', 'Strong'),
     ]
     current = models.CharField(max_length=10, choices=CURRENT_CHOICES, blank=True, verbose_name="Current")
 
     WEATHER_CHOICES = [
-        ('soleil', 'Soleil'),
-        ('nuage', 'Nuage'),
-        ('pluie', 'Pluie'),
-        ('averse', 'Averse')
+        ('sun', 'Sun'),
+        ('cloud', 'Cloud'),
+        ('rain', 'Rain'),
+        ('downpour', 'Downpour')
     ]
     weather = models.CharField(max_length=10, choices=WEATHER_CHOICES, blank=True, verbose_name="Weather")
     WIND_CHOICES = [
-        ('faible', 'Faible'),
-        ('moyen', 'Moyen'),
-        ('fort', 'Fort'),
+        ('none', 'None'),
+        ('weak', 'Weak'),
+        ('medium', 'Medium'),
+        ('strong', 'Strong'),
     ]
     wind = models.CharField(max_length=10, choices=WIND_CHOICES, blank=True, verbose_name="Wind")
 
@@ -98,11 +100,11 @@ class DivingLog(models.Model):
 
     # Statut et validation
     STATUS_CHOICES = [
-        ('EN_ATTENTE', 'En attente'),
-        ('VALIDÉ', 'Validé'),
-        ('REFUSÉ', 'Refusé'),
+        ('AWAITING', 'Awaiting'),
+        ('VALIDATED', 'Validated'),
+        ('REFUSED', 'Refused'),
     ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='EN_ATTENTE')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='AWAITING')
     validated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name='validated_dives')
 

@@ -14,7 +14,7 @@ class DivingLogSerializer(serializers.ModelSerializer):
     def validate_status(self, value):
         # Si c'est une création (l'instance n'existe pas encore)
         if not self.instance:
-            if value != 'EN_ATTENTE':
-                raise serializers.ValidationError("Le statut initial doit être 'EN_ATTENTE'")
+            if value != 'AWAITING':
+                raise serializers.ValidationError("Initial status must be 'AWAITING'")
         return value
 

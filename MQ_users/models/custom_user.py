@@ -34,11 +34,11 @@ class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     # Roles
     ROLE_CHOICES = [
-        ('PLONGEUR', 'Plongeur'),
-        ('FORMATEUR', 'Formateur'),
+        ('DIVER', 'Diver'),
+        ('INSTRUCTOR', 'Instructor'),
         ('ADMIN', 'Admin'),
     ]
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='PLONGEUR')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='DIVER')
 
     # Définition du manager personnalisé pour ce modèle
     objects = CustomUserManager()

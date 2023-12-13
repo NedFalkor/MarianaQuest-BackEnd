@@ -16,7 +16,7 @@ class DivingLogViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # Lors de la création, le statut est automatiquement mis à 'EN_ATTENTE'
-        request.data['status'] = 'EN_ATTENTE'
+        request.data['status'] = 'AWAITING'
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -24,9 +24,9 @@ class DivingLogViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         # Seul un formateur peut changer le statut d'un DivingLog
-        if hasattr(user, 'role') and user.role != 'FORMATEUR':
+        if hasattr(user, 'role') and user.role != 'INSTRUCTOR':
             return Response(status=status.HTTP_403_FORBIDDEN,
-                            data={"message": "Seuls les formateurs peuvent modifier le statut."})
+                            data={"message": "Only instructors can modify status"})
 
         return super().update(request, *args, **kwargs)
 
@@ -34,9 +34,9 @@ class DivingLogViewSet(viewsets.ModelViewSet):
         user = request.user
 
         # Seul un formateur peut supprimer un DivingLog
-        if hasattr(user, 'role') and user.role != 'FORMATEUR':
+        if hasattr(user, 'role') and user.role != 'INSTRUCTOR':
             return Response(status=status.HTTP_403_FORBIDDEN,
-                            data={"message": "Seuls les formateurs peuvent supprimer le journal."})
+                            data={"message": "Only instructors can delete a log"})
 
         return super().destroy(request, *args, **kwargs)
 
