@@ -3,9 +3,9 @@ from MQ_diving_logs.models.diving_log import DivingLog
 
 
 class DivingLogSerializer(serializers.ModelSerializer):
-    dive_number = serializers.IntegerField(allow_null=True, required=False)
-    dive_date = serializers.DateField(allow_null=True, required=False)
-    dive_site = serializers.CharField(max_length=255, required=False)
+    ## dive_number = serializers.IntegerField(allow_null=True, required=False)
+    ## dive_date = serializers.DateField(allow_null=True, required=False)
+    ## dive_site = serializers.CharField(max_length=255, required=False)
 
     class Meta:
         model = DivingLog
@@ -17,4 +17,3 @@ class DivingLogSerializer(serializers.ModelSerializer):
             if value != 'AWAITING':
                 raise serializers.ValidationError("Initial status must be 'AWAITING'")
         return value
-

@@ -6,6 +6,7 @@ from MQ_users.serializers.emergency_contact_serializer import EmergencyContactSe
 
 class DiverProfileSerializer(serializers.ModelSerializer):
     emergency_contact = EmergencyContactSerializer()
+    role = serializers.ReadOnlyField(source='user.role')
 
     class Meta:
         model = DiverProfile

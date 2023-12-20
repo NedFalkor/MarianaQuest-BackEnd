@@ -1,7 +1,6 @@
 from AptUrl.Helpers import _
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from rest_framework.exceptions import ValidationError
 
 
 class CustomUserManager(BaseUserManager):
@@ -39,6 +38,16 @@ class CustomUser(AbstractUser):
         ('ADMIN', 'Admin'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='DIVER')
+
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('Requis. 150 caractères ou moins.'),
+        error_messages={
+            'unique': _("Un utilisateur avec ce nom d'utilisateur existe déjà."),
+        },
+    )
 
     # Définition du manager personnalisé pour ce modèle
     objects = CustomUserManager()
