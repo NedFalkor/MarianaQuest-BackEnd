@@ -9,6 +9,9 @@ class InstructorComment(models.Model):
     instructor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Comment")
     comment_date = models.DateTimeField(auto_now_add=True)
+    # Signature & Stamp
+    signature = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature")
+    stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
 
     class Meta:
         ordering = ['-comment_date']

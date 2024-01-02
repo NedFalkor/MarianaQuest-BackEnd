@@ -1,5 +1,6 @@
 from django.db import models
 from MQ_users.models import CustomUser
+from MQ_users.models.dive_group import DiveGroup
 
 
 class DivingLog(models.Model):
@@ -7,6 +8,8 @@ class DivingLog(models.Model):
     dive_number = models.IntegerField(null=True, blank=True, verbose_name="Dive Number")
     dive_date = models.DateField(null=True, blank=True, verbose_name="Dive Date")
     dive_site = models.CharField(max_length=255, blank=True, verbose_name="Dive Site")
+    dive_group = models.ForeignKey(DiveGroup, on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name="Dive Group")
     objects = models.Manager()
 
     ENVIRONMENT_CHOICES = [
@@ -94,17 +97,13 @@ class DivingLog(models.Model):
 
     observations = models.TextField(blank=True, verbose_name="Observations")
 
-    # Signature & Stamp
-    signature = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature")
-    stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
-
     # Statut et validation
     STATUS_CHOICES = [
         ('AWAITING', 'Awaiting'),
         ('VALIDATED', 'Validated'),
         ('REFUSED', 'Refused'),
     ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='AWAITING')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='VALIDATED')
     validated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name='validated_dives')
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dc96dd14-b5e6-48b2-8c4a-10b00c035f00" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../MQ_diving_logs/permissions/status_permission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/models/diving_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/models/diving_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/models/instructor_comment.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/models/instructor_comment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/permissions/is_diver_permission.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/permissions/is_diver_permission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/permissions/is_instructor_permission.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/permissions/is_instructor_or_adminpermission.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/serializers/diving_log_serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/serializers/diving_log_serializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/viewsets/diving_log_viewset.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/viewsets/diving_log_viewset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_diving_logs/viewsets/instructor_comment_viewset.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_diving_logs/viewsets/instructor_comment_viewset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/backends.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/backends.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/models/dive_group.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/models/dive_group.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/models/emergency_contact.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/models/emergency_contact.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/serializers/dive_group_serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/serializers/dive_group_serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MQ_users/viewsets/dive_group_viewset.py" beforeDir="false" afterPath="$PROJECT_DIR$/../MQ_users/viewsets/dive_group_viewset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../logs/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/../logs/debug.log" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2a9JZeWcfiAFWYJSUxl25mDASy8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/nedfalkor/Bureau/MarianaQuest/BackEnd/MarianaQuest-BackEnd"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13135.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dc96dd14-b5e6-48b2-8c4a-10b00c035f00" name="Changes" comment="" />
+      <created>1703724917844</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703724917844</updated>
+    </task>
+    <servers />
+  </component>
+</project>

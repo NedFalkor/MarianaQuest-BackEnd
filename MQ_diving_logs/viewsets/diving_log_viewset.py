@@ -15,8 +15,7 @@ class DivingLogViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
-        # Lors de la création, le statut est automatiquement mis à 'EN_ATTENTE'
-        request.data['status'] = 'AWAITING'
+        request.data['status'] = 'VALIDATED'
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):

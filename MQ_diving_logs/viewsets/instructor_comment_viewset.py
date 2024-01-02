@@ -1,7 +1,8 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from MQ_diving_logs.models.instructor_comment import InstructorComment
-from MQ_diving_logs.permissions.is_instructor_permission import IsInstructor
+from MQ_diving_logs.permissions.is_instructor_or_adminpermission import IsInstructor
 from MQ_diving_logs.serializers.instructor_comment_serializer import InstructorCommentSerializer
 
 
@@ -9,6 +10,13 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
     queryset = InstructorComment.objects.all()
     serializer_class = InstructorCommentSerializer
     permission_classes = [IsInstructor]
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [IsAuthenticated, IsInstructor]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

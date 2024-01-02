@@ -24,9 +24,32 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(DiveGroup)
 class DiveGroupAdmin(admin.ModelAdmin):
-    list_display = ('group_number', 'boat_driver', 'trainer_one', 'trainer_two')
+    list_display = ('group_number', 'boat_driver', 'trainer_one', 'trainer_two', 'get_divers_list')
     search_fields = ('group_number', 'boat_driver__username', 'trainer_one__username', 'trainer_two__username')
     list_filter = ('boat_driver', 'trainer_one', 'trainer_two')
+
+    def boat_driver(self, obj):
+        return obj.boat_driver.username if obj.boat_driver else '-'
+    boat_driver.admin_order_field = 'boat_driver__username'
+    boat_driver.short_description = 'Boat Driver'
+
+    def trainer_one(self, obj):
+        return obj.trainer_one.username if obj.trainer_one else '-'
+    trainer_one.admin_order_field = 'trainer_one__username'
+    trainer_one.short_description = 'First Trainer'
+
+    def trainer_two(self, obj):
+        return obj.trainer_two.username if obj.trainer_two else '-'
+    trainer_two.admin_order_field = 'trainer_two__username'
+    trainer_two.short_description = 'Second Trainer'
+
+    def get_divers_list(self, obj):
+        return ", ".join([diver.username for diver in obj.divers.all()]) if obj.divers.exists() else "-"
+    get_divers_list.short_description = 'Divers'
+
+    def save_related(self, request, form, formsets, change):
+        super(DiveGroupAdmin, self).save_related(request, form, formsets, change)
+        form.instance.divers.set(form.cleaned_data.get('divers', []))
 
 
 @admin.register(DiverProfile)
@@ -63,20 +86,16 @@ class DiverProfileAdmin(admin.ModelAdmin):
     get_role.short_description = 'Role'
 
     def get_emergency_contact_name(self, obj):
-        contacts = obj.emergency_contacts.all()
-        if contacts:
-            return contacts[0].last_name
-        return '-'
+        contact = obj.emergency_contacts.first()
+        return contact.last_name if contact else '-'
 
-    get_emergency_contact_name.short_description = 'Emergency Contact Name'
+    get_emergency_contact_name.short_description = 'EC Name'
 
     def get_emergency_contact_phone(self, obj):
-        contacts = obj.emergency_contacts.all()
-        if contacts:
-            return contacts[0].mobile
-        return '-'
+        contact = obj.emergency_contacts.first()
+        return contact.mobile if contact else '-'
 
-    get_emergency_contact_phone.short_description = 'Emergency Contact Phone'
+    get_emergency_contact_phone.short_description = 'EC Phone'
 
     @admin.register(EmergencyContact)
     class EmergencyContactAdmin(admin.ModelAdmin):
