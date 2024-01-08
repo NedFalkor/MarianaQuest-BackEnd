@@ -13,6 +13,11 @@ class InstructorComment(models.Model):
     signature = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature")
     stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
 
+    def save(self, *args, **kwargs):
+        if self.diving_log.status != 'AWAITING':
+            raise ValueError("Instructor comments can only be added when the diving log is in 'AWAITING' status.")
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['-comment_date']
 
