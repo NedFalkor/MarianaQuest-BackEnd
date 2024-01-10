@@ -1,5 +1,4 @@
 from django.db import models
-from rest_framework.exceptions import ValidationError
 from MQ_users.models import CustomUser
 
 
@@ -43,24 +42,3 @@ class DiveGroup(models.Model):
 
     def get_divers_list(self):
         return ", ".join([diver.username for diver in self.divers.all()])
-
-    def clean(self):
-        # Ensure the boat driver is present and is a trainer
-        if not self.boat_driver or getattr(self.boat_driver, 'role', None) != 'INSTRUCTOR':
-            raise ValidationError("Un conducteur de bateau formateur est requis.")
-
-        # Validate that each trainer has between 1 and 2 divers
-        trainer_with_diver_present = False
-        for trainer in [self.trainer_one, self.trainer_two]:
-            if trainer:
-                diver_count = self.divers.filter(role='DIVER').count()
-                if diver_count < 1 or diver_count > 2:
-                    raise ValidationError(f"{getattr(trainer, 'username', None)} doit avoir entre 1 et 2 plongeurs.")
-                trainer_with_diver_present = True
-
-        if not trainer_with_diver_present:
-            raise ValidationError("Au moins un formateur avec un plongeur est requis.")
-
-    def save(self, *args, **kwargs):
-        self.clean()
-        super().save(*args, **kwargs)

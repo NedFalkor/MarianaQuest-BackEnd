@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from MQ_users.models.dive_group import DiveGroup
-from MQ_users.serializers.dive_group_serializers import DiveGroupSerializer
+from MQ_users.serializers.dive_group_serializer import DiveGroupSerializer
 
 
 class DiveGroupViewSet(viewsets.ModelViewSet):

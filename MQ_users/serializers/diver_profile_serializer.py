@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from MQ_users.cheks.diver_profile_check import DiverProfileCheck
 from MQ_users.models import DiverProfile, EmergencyContact
 from MQ_users.serializers.emergency_contact_serializer import EmergencyContactSerializer
 
@@ -11,6 +12,14 @@ class DiverProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiverProfile
         fields = '__all__'
+
+    def validate(self, data):
+        form = DiverProfileCheck(data)
+
+        if form.is_valid():
+            return form.cleaned_data
+        else:
+            raise serializers.ValidationError(form.errors)
 
     def create(self, validated_data):
         emergency_contact_data = validated_data.pop('emergency_contact')

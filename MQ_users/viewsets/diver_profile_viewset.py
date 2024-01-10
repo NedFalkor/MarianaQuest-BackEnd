@@ -1,13 +1,25 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 
 from MQ_users.models.diver_profile import DiverProfile
+from MQ_users.permissions.is_owner_or_admin_permission import IsOwnerOrAdmin
 from MQ_users.serializers.diver_profile_serializer import DiverProfileSerializer
 
 
 class DiverProfileViewSet(viewsets.ModelViewSet):
     queryset = DiverProfile.objects.all()
     serializer_class = DiverProfileSerializer
+    permission_classes = [IsOwnerOrAdmin]
+
+    def get_permissions(self):
+        """
+        Instance et renvoie la liste des permissions que ce viewset nécessite.
+        """
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permission_classes = [IsOwnerOrAdmin]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     # Create
     def create(self, request, *args, **kwargs):
