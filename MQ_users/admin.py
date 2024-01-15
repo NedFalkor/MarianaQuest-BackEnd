@@ -25,7 +25,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(DiveGroup)
 class DiveGroupAdmin(admin.ModelAdmin):
-    list_display = ('group_description', 'boat_driver', 'trainer_one', 'trainer_two', 'get_divers_list')
+    list_display = ('group_description', 'date', 'boat_driver', 'trainer_one', 'trainer_two', 'get_divers_list')
     search_fields = ('group_description', 'boat_driver__username', 'trainer_one__username', 'trainer_two__username')
     list_filter = ('boat_driver', 'trainer_one', 'trainer_two')
 

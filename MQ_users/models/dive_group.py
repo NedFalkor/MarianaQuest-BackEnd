@@ -1,9 +1,14 @@
+
+
 from django.db import models
+from django.utils import timezone
+
 from MQ_users.models import CustomUser
 
 
 class DiveGroup(models.Model):
     group_description = models.CharField(max_length=255, verbose_name="Group Description", null=True, blank=True)
+    date = models.DateField(default=timezone.now, verbose_name="Dive Date")
     boat_driver = models.ForeignKey(
         CustomUser,
         on_delete=models.SET_NULL,
