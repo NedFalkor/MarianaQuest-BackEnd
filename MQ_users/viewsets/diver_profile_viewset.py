@@ -1,9 +1,11 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 
+from MQ_users.models import EmergencyContact
 from MQ_users.models.diver_profile import DiverProfile
 from MQ_users.permissions.is_owner_or_admin_permission import IsOwnerOrAdmin
 from MQ_users.serializers.diver_profile_serializer import DiverProfileSerializer
+from MQ_users.serializers.emergency_contact_serializer import EmergencyContactSerializer
 
 
 class DiverProfileViewSet(viewsets.ModelViewSet):
@@ -25,7 +27,18 @@ class DiverProfileViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            emergency_contact_data = serializer.validated_data.pop('emergency_contact', None)
+            diver_profile = serializer.save()
+
+            if emergency_contact_data:
+                emergency_contact_serializer = EmergencyContactSerializer(data=emergency_contact_data)
+                if emergency_contact_serializer.is_valid():
+                    EmergencyContact.objects.create(diver_profile=diver_profile,
+                                                    **emergency_contact_serializer.validated_data)
+                else:
+                    diver_profile.delete()  # Rollback the diver profile creation
+                    return Response(emergency_contact_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42,14 +55,26 @@ class DiverProfileViewSet(viewsets.ModelViewSet):
 
     # Update
     def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         if serializer.is_valid():
-            serializer.save()
+            emergency_contact_data = serializer.validated_data.pop('emergency_contact', None)
+
+            diver_profile = serializer.save()
+
+            if emergency_contact_data:
+                emergency_contact = instance.emergency_contact
+                emergency_contact_serializer = EmergencyContactSerializer(emergency_contact,
+                                                                          data=emergency_contact_data)
+                if emergency_contact_serializer.is_valid():
+                    emergency_contact_serializer.save()
+                else:
+                    return Response(emergency_contact_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Delete
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()

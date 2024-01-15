@@ -2,6 +2,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from MQ_users.models import CustomUser
 from MQ_users.serializers.user_profile_serializer import UserProfileSerializer
+from MQ_users.cheks.custom_user_check import CustomUserCheck
 
 
 class UserProfileViewSet(mixins.RetrieveModelMixin,
@@ -32,11 +33,13 @@ class UserProfileViewSet(mixins.RetrieveModelMixin,
         if user != request.user:
             return Response({"error": "Not allowed to update this user"}, status=status.HTTP_403_FORBIDDEN)
 
-        email = request.data.get('email')
-        if email and CustomUser.objects.filter(email=email).exclude(pk=user.pk).exists():
-            return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
-
-        return super(UserProfileViewSet, self).update(request, *args, **kwargs)
+        form = CustomUserCheck(request.data, instance=user)
+        if form.is_valid():
+            user = form.save()
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+        else:
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
