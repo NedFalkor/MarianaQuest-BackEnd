@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_diving_logs.models.instructor_comment import InstructorComment
+from MQ_users.models import CustomUser
 
 
 @admin.register(DivingLog)
@@ -39,3 +40,8 @@ class InstructorCommentAdmin(admin.ModelAdmin):
         if obj is not None and not request.user == obj.instructor:
             return False
         return request.user.role == 'INSTRUCTOR'
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "instructor":
+            kwargs["queryset"] = CustomUser.objects.filter(role='INSTRUCTOR')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)

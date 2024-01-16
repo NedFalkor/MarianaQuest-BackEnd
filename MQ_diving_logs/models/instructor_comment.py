@@ -1,11 +1,13 @@
 from django.db import models
 
 from MQ_users.models import CustomUser
+from MQ_users.models.dive_group import DiveGroup
 from .diving_log import DivingLog
 
 
 class InstructorComment(models.Model):
     diving_log = models.ForeignKey(DivingLog, on_delete=models.CASCADE)
+    dive_group = models.ForeignKey(DiveGroup, on_delete=models.CASCADE, related_name='instructor_comments')
     instructor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Comment")
     comment_date = models.DateTimeField(auto_now_add=True)
@@ -14,8 +16,9 @@ class InstructorComment(models.Model):
     stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
 
     def save(self, *args, **kwargs):
-        if self.diving_log.status != 'AWAITING':
-            raise ValueError("Instructor comments can only be added when the diving log is in 'AWAITING' status.")
+        if (self.instructor not in self.diving_log.dive_group.divers.all()
+                and self.instructor != self.diving_log.dive_group.boat_driver):
+            raise ValueError("Instructor must be part of the dive group.")
         super().save(*args, **kwargs)
 
     class Meta:

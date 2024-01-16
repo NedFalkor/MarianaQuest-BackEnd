@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_diving_logs.permissions.is_diver_permission import IsDiver
-from MQ_diving_logs.permissions.is_instructor_or_adminpermission import IsInstructor
+from MQ_diving_logs.permissions.is_instructor_permission import IsInstructor
 from MQ_diving_logs.serializers.diving_log_serializer import DivingLogSerializer
 
 

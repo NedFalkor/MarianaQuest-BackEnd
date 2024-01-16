@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_diving_logs.models.instructor_comment import InstructorComment
 from MQ_diving_logs.permissions.is_diver_permission import IsDiver
-from MQ_diving_logs.permissions.is_instructor_or_adminpermission import IsInstructor
+from MQ_diving_logs.permissions.is_instructor_permission import IsInstructor
 from MQ_diving_logs.permissions.status_permission import StatusPermission
 from MQ_diving_logs.serializers.instructor_comment_serializer import InstructorCommentSerializer
 from rest_framework import permissions
@@ -15,6 +15,12 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
     queryset = InstructorComment.objects.all()
     serializer_class = InstructorCommentSerializer
     permission_classes = [IsInstructor]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role != 'INSTRUCTOR':
+            queryset = queryset.none()  # Ceci assure que les utilisateurs non instructeurs ne voient aucun commentaire
+        return queryset
 
     def get_permissions(self):
         if self.action == 'create':
@@ -28,15 +34,32 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         diving_log_id = request.data.get('diving_log')
         diving_log = DivingLog.objects.filter(id=diving_log_id).first()
-        if diving_log and diving_log.status == 'AWAITING':  # Check if the diving log is in AWAITING status
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({"error": "Instructor comments can only be added when the diving log is awaiting."},
+
+        # Check if the diving log exists
+        if not diving_log:
+            return Response({"error": "Diving log not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the diving log belongs to a diver
+        if diving_log.user.role != 'DIVER':
+            return Response({"error": "You can only comment on diving logs of divers."},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the requesting user is an instructor
+        if request.user.role != 'INSTRUCTOR':
+            return Response({"error": "Only instructors can add comments."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Check if the diving log status is 'AWAITING'
+        if diving_log.status != 'AWAITING':
+            return Response({"error": "Can only add comments to diving logs with 'AWAITING' status."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate and save the comment with the instructor set as the current user
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(instructor=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
