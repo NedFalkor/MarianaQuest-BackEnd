@@ -6,8 +6,8 @@ from .diving_log import DivingLog
 
 
 class InstructorComment(models.Model):
-    diving_log = models.ForeignKey(DivingLog, on_delete=models.CASCADE)
-    dive_group = models.ForeignKey(DiveGroup, on_delete=models.CASCADE, related_name='instructor_comments')
+    diving_log = models.ForeignKey(DivingLog, on_delete=models.CASCADE, null=True)
+    dive_group = models.ForeignKey(DiveGroup, on_delete=models.CASCADE, related_name='instructor_comments', null=True)
     instructor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Comment")
     comment_date = models.DateTimeField(auto_now_add=True)

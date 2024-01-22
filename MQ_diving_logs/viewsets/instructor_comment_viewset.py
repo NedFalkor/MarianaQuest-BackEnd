@@ -53,6 +53,11 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
             return Response({"error": "Can only add comments to diving logs with 'AWAITING' status."},
                             status=status.HTTP_400_BAD_REQUEST)
 
+        # Check if the instructor is part of the dive group
+        dive_group = diving_log.dive_group
+        if request.user not in dive_group.divers.all() and request.user != dive_group.boat_driver:
+            return Response({"error": "Instructor is not part of the dive group."}, status=status.HTTP_403_FORBIDDEN)
+
         # Validate and save the comment with the instructor set as the current user
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

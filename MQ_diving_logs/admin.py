@@ -45,3 +45,14 @@ class InstructorCommentAdmin(admin.ModelAdmin):
         if db_field.name == "instructor":
             kwargs["queryset"] = CustomUser.objects.filter(role='INSTRUCTOR')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj and obj.diving_log and obj.diving_log.dive_group:  # S'assurer que obj et obj.diving_log ne sont pas None
+            # Restreindre le champ 'instructor' aux instructeurs du groupe de plongée
+            form.base_fields['instructor'].queryset = CustomUser.objects.filter(
+                role='INSTRUCTOR',
+                dive_groups=obj.diving_log.dive_group
+            )
+        return form
+

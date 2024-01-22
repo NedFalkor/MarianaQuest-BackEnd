@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_users.models import DiverProfile, EmergencyContact, CustomUser
 from MQ_users.models.dive_group import DiveGroup
 
@@ -25,7 +26,14 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(DiveGroup)
 class DiveGroupAdmin(admin.ModelAdmin):
-    list_display = ('group_description', 'date', 'boat_driver', 'trainer_one', 'trainer_two', 'get_divers_list')
+    list_display = (
+        'group_description',
+        'date',
+        'boat_driver',
+        'trainer_one',
+        'trainer_two',
+        'get_divers_list'
+    )
     search_fields = ('group_description', 'boat_driver__username', 'trainer_one__username', 'trainer_two__username')
     list_filter = ('boat_driver', 'trainer_one', 'trainer_two')
 
