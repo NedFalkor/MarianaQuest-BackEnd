@@ -9,7 +9,7 @@ class DivingLog(models.Model):
     dive_date = models.DateField(null=True, blank=True, verbose_name="Dive Date")
     dive_site = models.CharField(max_length=255, blank=True, verbose_name="Dive Site")
     dive_group = models.ForeignKey(DiveGroup, on_delete=models.SET_NULL, null=True, blank=True,
-                                   verbose_name="Dive Group")
+                                verbose_name="Dive Group")
     objects = models.Manager()
 
     ENVIRONMENT_CHOICES = [
@@ -103,7 +103,7 @@ class DivingLog(models.Model):
         ('VALIDATED', 'Validated'),
         ('REFUSED', 'Refused'),
     ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='VALIDATED')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='AWAITING')
     validated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL,
                                      related_name='validated_dives')
 

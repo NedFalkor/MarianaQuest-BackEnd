@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from MQ_users.serializers.auth_user_serializer import AuthUserSerializer
 from django.core.exceptions import ValidationError
@@ -23,19 +24,18 @@ class AuthUserViewSet(viewsets.ViewSet):
         serializer = AuthUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Assuming that your AuthUserSerializer now accepts both email and username
-        email = serializer.validated_data['email']
-        username = serializer.validated_data['username']
-        password = serializer.validated_data['password']
+        # Assuming successful authentication
+        user = serializer.validated_data['user']
 
-        # Custom logic to authenticate by email and username could be implemented here.
-        # For example:
-        user = authenticate(request, email=email, username=username, password=password)
-        if not user:
-            raise ValidationError('Invalid login credentials.')
+        # Generate tokens using Simple JWT
+        refresh = RefreshToken.for_user(user)
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
 
-        login(request, user)
-        return Response({"message": "Connecté avec succès"}, status=status.HTTP_200_OK)
+        # Include the tokens in the response
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['get'], permission_classes=[AllowAny])
     def logout(self, request):

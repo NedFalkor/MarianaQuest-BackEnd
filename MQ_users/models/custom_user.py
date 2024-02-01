@@ -1,6 +1,7 @@
 from AptUrl.Helpers import _
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -48,6 +49,8 @@ class CustomUser(AbstractUser):
             'unique': _("Un utilisateur avec ce nom d'utilisateur existe déjà."),
         },
     )
+    date_created = models.DateTimeField(default=timezone.now)
+    is_online = models.BooleanField(default=False)
 
     # Définition du manager personnalisé pour ce modèle
     objects = CustomUserManager()

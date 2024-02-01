@@ -19,7 +19,7 @@ class EmergencyContactInline(admin.StackedInline):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'role', 'is_staff', 'is_active')
+    list_display = ('username', 'email', 'role', 'is_staff', 'is_active', 'date_created', 'is_online')
     search_fields = ('username', 'email')
     list_filter = ('role', 'is_staff', 'is_active')
 

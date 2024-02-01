@@ -12,18 +12,16 @@ router.register(r'auth', AuthUserViewSet, basename='auth')
 router.register(r'diver-profiles', DiverProfileViewSet, basename='diver-profiles')
 router.register(r'dive-groups', DiveGroupViewSet, basename='dive-groups')
 
+# Custom URL patterns if needed
 register_user_urlpatterns = [
     path('register/', RegisterUserViewSet.as_view({'post': 'create'}), name='register'),
 ]
 
 auth_user_urlpatterns = [
-    path('auth/login/', AuthUserViewSet.as_view({'post': 'login'}), name='auth-login'),
-    path('auth/logout/', AuthUserViewSet.as_view({'post': 'logout'}), name='auth-logout'),
-    path('auth/delete_account/', AuthUserViewSet.as_view({'delete': 'delete_account'}), name='auth-delete-account'),
+    path('login/', AuthUserViewSet.as_view({'post': 'login'}), name='auth-login'),
+    path('logout/', AuthUserViewSet.as_view({'post': 'logout'}), name='auth-logout'),
+    path('delete_account/', AuthUserViewSet.as_view({'delete': 'delete_account'}), name='auth-delete-account'),
 ]
 
-urlpatterns = [
-    path('', include(router.urls)),
-    path('', include(register_user_urlpatterns)),
-    path('', include(auth_user_urlpatterns)),
-]
+# Including default router URLs and custom URLs
+urlpatterns = router.urls + register_user_urlpatterns + auth_user_urlpatterns
