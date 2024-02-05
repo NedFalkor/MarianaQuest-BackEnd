@@ -6,12 +6,14 @@ class StatusPermission(permissions.BasePermission):
     message = "Only instructors can change the status."
 
     def has_object_permission(self, request, view, obj):
-        # Tout le monde peut lire, mais la modification nécessite des conditions spécifiques
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # Seuls les instructeurs peuvent changer le statut et uniquement si le statut n'est pas déjà 'VALIDATED'
         if isinstance(obj, DivingLog) and obj.status != 'VALIDATED':
-            return request.user.is_instructor
-
+            if hasattr(request.user, 'is_instructor') and request.user.is_instructor:
+                return True
+            else:
+                # Optionally, you can raise an exception here with the custom message
+                self.message = "Only instructors can change the status and the status must not be 'VALIDATED'."
+                return False
         return False

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from MQ_users.cheks.dive_group_check import DiveGroupCheck
+from MQ_users.checks.dive_group_check import DiveGroupCheck
 from MQ_users.models.dive_group import DiveGroup
 from MQ_users.models import CustomUser
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from MQ_users.cheks.diver_profile_check import DiverProfileCheck
+from MQ_users.checks.diver_profile_check import DiverProfileCheck
 from MQ_users.models import DiverProfile, EmergencyContact
 from MQ_users.serializers.emergency_contact_serializer import EmergencyContactSerializer
 

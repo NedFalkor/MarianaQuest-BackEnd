@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from MQ_users.cheks.emergency_contact_check import EmergencyContactCheck
+from MQ_users.checks.emergency_contact_check import EmergencyContactCheck
 from MQ_users.models import EmergencyContact
 
 

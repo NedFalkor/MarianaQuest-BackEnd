@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_users.models import DiverProfile, EmergencyContact, CustomUser
 from MQ_users.models.dive_group import DiveGroup
 

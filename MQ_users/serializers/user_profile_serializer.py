@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from MQ_users.models.custom_user import CustomUser
-from MQ_users.cheks.custom_user_check import CustomUserCheck
+from MQ_users.checks.custom_user_check import CustomUserCheck
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
