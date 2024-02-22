@@ -3,7 +3,7 @@ from MQ_diving_logs.models.diving_log import DivingLog
 
 
 class StatusPermission(permissions.BasePermission):
-    message = "Only instructors can change the status."
+    message = "Seuls les instructeurs peuvent modifier le statut."
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -14,6 +14,7 @@ class StatusPermission(permissions.BasePermission):
                 return True
             else:
                 # Optionally, you can raise an exception here with the custom message
-                self.message = "Only instructors can change the status and the status must not be 'VALIDATED'."
+                self.message = ("Seuls les instructeurs peuvent modifier le statut et le statut ne doit pas être "
+                                "« VALIDÉ ».")
                 return False
         return False

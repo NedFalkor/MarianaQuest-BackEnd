@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Application definition
 
@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'dj_rest_auth',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'axes',
     'MQ_users.apps.MqUsersConfig',
     'MQ_diving_logs',
 ]
@@ -53,8 +56,8 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': timedelta(hours=1)
+    'JWT_ALLOW_REFRESH': config('JWT_ALLOW_REFRESH', cast=bool),
+    'JWT_EXPIRATION_DELTA': timedelta(hours=config('JWT_EXPIRATION_DELTA', cast=int))
 }
 
 MIDDLEWARE = [
@@ -64,13 +67,13 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', cast=bool)
 
 ROOT_URLCONF = 'MarianaQuest.urls'
 
@@ -101,13 +104,22 @@ DATABASES = {
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST', default='localhost'),
-        'PORT': config('DATABASE_PORT', default='5432'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Medias')
 MEDIA_URL = '/Medias/'
+
+# django-axes
+AXES_FAILURE_LIMIT = config('AXES_FAILURE_LIMIT', cast=int)
+AXES_COOLOFF_TIME = timedelta(minutes=config('AXES_COOLOFF_TIME', cast=int))
+AXES_RESET_ON_SUCCESS = config('AXES_RESET_ON_SUCCESS', cast=bool)
+
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', cast=bool)
+X_FRAME_OPTIONS = config('X_FRAME_OPTIONS')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -116,13 +128,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
         'OPTIONS': {
-            'max_similarity': 0.7,
+            'max_similarity': config('USER_ATTRIBUTE_SIMILARITY_VALIDATOR_MAX_SIMILARITY', cast=float),
         }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 9,
+            'min_length': config('MINIMUM_LENGTH_VALIDATOR_MIN_LENGTH', cast=int),
         }
     },
     {
@@ -133,6 +145,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'MQ_users.validators.CharacterTypeValidator',
+        'OPTIONS': {
+            'special_char_min': config('CHARACTER_TYPE_VALIDATOR_SPECIAL_CHAR_MIN', cast=int),
+        }
     },
 ]
 
@@ -141,6 +156,7 @@ AUTH_USER_MODEL = 'MQ_users.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'MQ_users.backends.EmailAndUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'axes.backends.AxesStandaloneBackend',
 ]
 
 # Internationalization
@@ -169,9 +185,9 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': config('LOG_LEVEL'),
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+            'filename': os.path.join(BASE_DIR, 'logs', config('LOG_FILE')),
         },
     },
     'loggers': {

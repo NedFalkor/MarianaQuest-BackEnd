@@ -11,7 +11,6 @@ class DivingLogAdmin(admin.ModelAdmin):
     search_fields = ('dive_number', 'dive_site', 'user__username', 'dive_group__group_number')
     list_filter = ('user', 'dive_date', 'dive_site', 'depth', 'environment', 'dive_type', 'status')
 
-    # Si vous avez beaucoup de données, vous pouvez ajouter la pagination pour faciliter la navigation
     list_per_page = 25
 
     def get_dive_group_number(self, obj):
@@ -26,17 +25,14 @@ class InstructorCommentAdmin(admin.ModelAdmin):
     list_filter = ('diving_log', 'instructor', 'comment_date')
 
     def has_add_permission(self, request, obj=None):
-        # Only allow instructors to add comments
         return request.user.role == 'INSTRUCTOR'
 
     def has_change_permission(self, request, obj=None):
-        # Only allow instructors to change their own comments
         if obj is not None and not request.user == obj.instructor:
             return False
         return request.user.role == 'INSTRUCTOR'
 
     def has_delete_permission(self, request, obj=None):
-        # Only allow instructors to delete their own comments
         if obj is not None and not request.user == obj.instructor:
             return False
         return request.user.role == 'INSTRUCTOR'
@@ -48,8 +44,7 @@ class InstructorCommentAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if obj and obj.diving_log and obj.diving_log.dive_group:  # S'assurer que obj et obj.diving_log ne sont pas None
-            # Restreindre le champ 'instructor' aux instructeurs du groupe de plongée
+        if obj and obj.diving_log and obj.diving_log.dive_group:
             form.base_fields['instructor'].queryset = CustomUser.objects.filter(
                 role='INSTRUCTOR',
                 dive_groups=obj.diving_log.dive_group

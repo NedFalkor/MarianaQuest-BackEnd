@@ -19,7 +19,7 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.request.user.role != 'INSTRUCTOR':
-            queryset = queryset.none()  # Ceci assure que les utilisateurs non instructeurs ne voient aucun commentaire
+            queryset = queryset.none()
         return queryset
 
     def get_permissions(self):
@@ -35,30 +35,27 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
         diving_log_id = request.data.get('diving_log')
         diving_log = DivingLog.objects.filter(id=diving_log_id).first()
 
-        # Check if the diving log exists
         if not diving_log:
-            return Response({"error": "Diving log not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Carnet de plongée introuvable."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the diving log belongs to a diver
         if diving_log.user.role != 'DIVER':
-            return Response({"error": "You can only comment on diving logs of divers."},
+            return Response({"error": "Vous ne pouvez commenter que les carnets de plongée des plongeurs."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the requesting user is an instructor
         if request.user.role != 'INSTRUCTOR':
-            return Response({"error": "Only instructors can add comments."}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Seuls les instructeurs peuvent ajouter des commentaires."},
+                            status=status.HTTP_403_FORBIDDEN)
 
-        # Check if the diving log status is 'AWAITING'
         if diving_log.status != 'AWAITING':
-            return Response({"error": "Can only add comments to diving logs with 'AWAITING' status."},
+            return Response({"error": "Peut uniquement ajouter des commentaires aux journaux de plongée "
+                                      "avec le statut « EN ATTENTE »."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the instructor is part of the dive group
         dive_group = diving_log.dive_group
         if request.user not in dive_group.divers.all() and request.user != dive_group.boat_driver:
-            return Response({"error": "Instructor is not part of the dive group."}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "L'instructeur ne fait pas partie du groupe de plongée."},
+                            status=status.HTTP_403_FORBIDDEN)
 
-        # Validate and save the comment with the instructor set as the current user
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(instructor=request.user)
@@ -68,9 +65,9 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        # Vérifiez si l'utilisateur actuel est l'instructeur qui a créé le commentaire
         if instance.instructor != request.user:
-            return Response({"error": "Not allowed to update this comment"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Non autorisé à mettre à jour ce commentaire"},
+                            status=status.HTTP_403_FORBIDDEN)
 
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -82,7 +79,7 @@ class InstructorCommentViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         # Vérifiez si l'utilisateur actuel est l'instructeur qui a créé le commentaire
         if instance.instructor != request.user:
-            return Response({"error": "Not allowed to delete this comment"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"error": "Non autorisé à supprimer ce commentaire"}, status=status.HTTP_403_FORBIDDEN)
 
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

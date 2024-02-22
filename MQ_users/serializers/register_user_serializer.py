@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
+
 from MQ_users.models.custom_user import CustomUser
+from MQ_users.validators.custom_user_validator import CustomUserValidator
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -26,13 +29,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         if not data.get('email') and not data.get('username'):
             raise serializers.ValidationError("Un e-mail ou un nom d'utilisateur doit être fourni.")
 
-        # Validez l'unicité de l'email et du nom d'utilisateur si fournis
-        email = data.get('email')
-        username = data.get('username')
-        if email and CustomUser.objects.filter(email=email).exists():
-            raise serializers.ValidationError({"email": "Un utilisateur avec cet e-mail existe déjà."})
-        if username and CustomUser.objects.filter(username=username).exists():
-            raise serializers.ValidationError({"username": "Un utilisateur avec ce nom d'utilisateur existe déjà."})
+        # Utiliser CustomUserValidator pour valider l'email et le username
+        custom_user_validator = CustomUserValidator(data=data)
+        if not custom_user_validator.is_valid():
+            raise ValidationError(custom_user_validator.errors)
 
         # Vérifiez si les mots de passe correspondent
         if data['password'] != data['confirm_password']:

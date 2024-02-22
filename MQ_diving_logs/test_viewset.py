@@ -19,7 +19,6 @@ class DivingLogViewSetTest(APITestCase):
             'environment': 'sea',
             'depth': 10.0,
             'duration_dive': 30,
-            # Add other required fields here
         }
         self.dive_log = DivingLog.objects.create(user=self.user, **self.dive_log_data)
 
@@ -27,13 +26,13 @@ class DivingLogViewSetTest(APITestCase):
         url = reverse('divinglog-list')
         response = self.client.post(url, self.dive_log_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(DivingLog.objects.count(), 2)  # Assuming there was one log initially
+        self.assertEqual(DivingLog.objects.count(), 2)
 
     def test_list_diving_logs(self):
         url = reverse('divinglog-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Assuming only one log in the setup
+        self.assertEqual(len(response.data), 1)
 
     def test_retrieve_diving_log(self):
         url = reverse('divinglog-detail', args=[self.dive_log.id])

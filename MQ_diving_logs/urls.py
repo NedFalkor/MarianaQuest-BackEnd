@@ -22,3 +22,4 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path('api/', include(router_diving_logs.urls)),
 ]
+

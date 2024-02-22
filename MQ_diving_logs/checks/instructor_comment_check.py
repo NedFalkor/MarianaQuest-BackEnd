@@ -14,10 +14,12 @@ class InstructorCommentCheck(forms.ModelForm):
         if diving_log:
             if diving_log.status != 'AWAITING':
                 raise forms.ValidationError(
-                    "Instructor comments can only be added when the diving log is in 'AWAITING' status.")
+                    "Les commentaires de l'instructeur ne peuvent être ajoutés que lorsque le journal de plongée est à "
+                    "l'état « EN ATTENTE ».")
             if diving_log.user.role != 'DIVER':
                 raise forms.ValidationError(
-                    "Instructor comments can only be made on diving logs of users with the 'DIVER' role.")
+                    "Les commentaires de l'instructeur ne peuvent être faits que sur les journaux de plongée des "
+                    "utilisateurs ayant le rôle « PLONGEUR ».")
         return diving_log
 
     def clean_comment_date(self):
@@ -25,15 +27,16 @@ class InstructorCommentCheck(forms.ModelForm):
         diving_log_date = self.cleaned_data.get('diving_log').dive_date if self.cleaned_data.get('diving_log') else None
 
         if comment_date and diving_log_date and comment_date < diving_log_date:
-            raise forms.ValidationError("Comment date cannot be before the dive date.")
+            raise forms.ValidationError("La date du commentaire ne peut pas être antérieure à la date de la plongée.")
         if comment_date and comment_date > datetime.now():
-            raise forms.ValidationError("Comment date cannot be in the future.")
+            raise forms.ValidationError("La date du commentaire ne peut pas être postérieure.")
         return comment_date
 
     def clean_instructor(self):
         instructor = self.cleaned_data.get('instructor')
         if instructor and instructor.role != 'INSTRUCTOR':
-            raise forms.ValidationError("Only users with the 'INSTRUCTOR' role can make comments.")
+            raise forms.ValidationError("Seuls les utilisateurs ayant le rôle «INSTRUCTEUR» peuvent faire des "
+                                        "commentaires.")
         return instructor
 
     def clean(self):
@@ -44,9 +47,9 @@ class InstructorCommentCheck(forms.ModelForm):
         stamp = cleaned_data.get('stamp')
 
         if diving_log and instructor and diving_log.user == instructor:
-            raise ValidationError("Instructor cannot comment on their own diving log.")
+            raise ValidationError("L'instructeur ne peut pas commenter son propre journal de plongée.")
 
         if not signature or not stamp:
-            raise ValidationError("Signature and stamp are required.")
+            raise ValidationError("La signature et le cachet sont requis.")
 
         return cleaned_data

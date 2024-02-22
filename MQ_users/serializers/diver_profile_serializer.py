@@ -1,20 +1,21 @@
 from rest_framework import serializers
 
-from MQ_users.checks.diver_profile_check import DiverProfileCheck
 from MQ_users.models import DiverProfile, EmergencyContact
 from MQ_users.serializers.emergency_contact_serializer import EmergencyContactSerializer
+from MQ_users.validators.diver_profile_validator import DiverProfileValidator
 
 
 class DiverProfileSerializer(serializers.ModelSerializer):
     emergency_contact = EmergencyContactSerializer()
     role = serializers.ReadOnlyField(source='user.role')
+    identity_photo = serializers.ImageField(max_length=None, use_url=True, required=False, allow_null=True)
 
     class Meta:
         model = DiverProfile
         fields = '__all__'
 
     def validate(self, data):
-        form = DiverProfileCheck(data)
+        form = DiverProfileValidator(data)
 
         if form.is_valid():
             return form.cleaned_data

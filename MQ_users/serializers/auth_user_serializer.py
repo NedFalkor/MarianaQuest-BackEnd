@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
+from MQ_users.validators.custom_user_validator import CustomUserValidator
+
 
 class AuthUserSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
@@ -11,6 +13,12 @@ class AuthUserSerializer(serializers.Serializer):
         email = attrs.get('email')
         username = attrs.get('username')
         password = attrs.get('password')
+
+        user_data = {'email': email, 'username': username}
+        user_validator = CustomUserValidator(data=user_data)
+
+        if not user_validator.is_valid():
+            raise serializers.ValidationError(user_validator.errors)
 
         if email:
             user = authenticate(email=email, password=password)

@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from MQ_users.checks.dive_group_check import DiveGroupCheck
 from MQ_users.models.dive_group import DiveGroup
 from MQ_users.models import CustomUser
+from MQ_users.validators.dive_group_validator import DiveGroupValidator
 
 
 class DiveGroupSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class DiveGroupSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         # Créer une instance de DiveGroupCheck avec les données
-        form = DiveGroupCheck(data)
+        form = DiveGroupValidator(data)
 
         # Exécuter la validation
         if form.is_valid():
