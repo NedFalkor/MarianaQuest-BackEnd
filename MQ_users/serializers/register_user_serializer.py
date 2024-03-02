@@ -4,8 +4,8 @@ from MQ_users.models.custom_user import CustomUser
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=False)
-    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True,
                                      required=True,
                                      style={'input_type': 'password'},
@@ -22,11 +22,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password', 'confirm_password', 'role']
 
     def validate(self, data):
-        # Assurez-vous qu'au moins l'email ou le nom d'utilisateur est fourni
+        # Au moins l'email ou le nom d'utilisateur est fourni
         if not data.get('email') and not data.get('username'):
             raise serializers.ValidationError("Un e-mail ou un nom d'utilisateur doit être fourni.")
 
-        # Validez l'unicité de l'email et du nom d'utilisateur si fournis
+        # Unicité de l'email et du nom d'utilisateur si fournis
         email = data.get('email')
         username = data.get('username')
         if email and CustomUser.objects.filter(email=email).exists():

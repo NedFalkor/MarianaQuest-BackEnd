@@ -16,7 +16,7 @@ class RegisterUserViewSet(viewsets.ModelViewSet):
 
         email = serializer.validated_data.get('email')
         username = serializer.validated_data.get('username')
-        role = serializer.validated_data.get('role', 'PLONGEUR')  # Default to 'PLONGEUR' if not provided
+        role = serializer.validated_data.get('role', 'PLONGEUR')
 
         # Check if the email or username already exists
         if CustomUser.objects.filter(email=email).exists():

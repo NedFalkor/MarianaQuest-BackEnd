@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from MQ_users.checks.emergency_contact_check import EmergencyContactCheck
 from MQ_users.models import EmergencyContact
+from MQ_users.validators.emergency_contact_validator import EmergencyContactValidator
 
 
 class EmergencyContactSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class EmergencyContactSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
-        form = EmergencyContactCheck(data)
+        form = EmergencyContactValidator(data)
 
         if form.is_valid():
             return form.cleaned_data

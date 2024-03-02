@@ -7,9 +7,9 @@ from django.utils import timezone
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
         if not email:
-            raise ValueError(_('The Email field must be set'))
+            raise ValueError(_('Le champ Email doit être renseigné'))
         if not username:
-            raise ValueError(_('The Username field must be set'))
+            raise ValueError(_('Le champ Utilisateur doit être renseigné'))
 
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **extra_fields)
@@ -22,17 +22,15 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         if not extra_fields.get('is_staff'):
-            raise ValueError(_('Superuser must have is_staff=True.'))
+            raise ValueError(_('le super utilisateur doit avoir : is_staff=True.'))
         if not extra_fields.get('is_superuser'):
-            raise ValueError(_('Superuser must have is_superuser=True.'))
+            raise ValueError(_('le super utilisateur doit avoir : is_superuser=True.'))
 
         return self.create_user(email, username, password, **extra_fields)
 
 
 class CustomUser(AbstractUser):
-    # Assume we want to keep the unique email field
     email = models.EmailField(_('email address'), unique=True)
-    # Roles
     ROLE_CHOICES = [
         ('DIVER', 'Diver'),
         ('INSTRUCTOR', 'Instructor'),
@@ -46,16 +44,16 @@ class CustomUser(AbstractUser):
         unique=True,
         help_text=_('Requis. 150 caractères ou moins.'),
         error_messages={
-            'unique': _("Un utilisateur avec ce nom d'utilisateur existe déjà."),
+            'unique': _("Un utilisateur avec ce nom existe déjà."),
         },
     )
     date_created = models.DateTimeField(default=timezone.now)
     is_online = models.BooleanField(default=False)
 
-    # Définition du manager personnalisé pour ce modèle
+    # Définition du manager
     objects = CustomUserManager()
 
-    # Utilisez à la fois l'email et le nom d'utilisateur pour l'authentification
+    # email et nom utilisateur pour authentification
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 

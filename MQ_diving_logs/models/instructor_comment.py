@@ -12,8 +12,8 @@ class InstructorComment(models.Model):
     comment = models.TextField(verbose_name="Comment")
     comment_date = models.DateTimeField(auto_now_add=True)
     # Signature & Stamp
-    signature = models.ImageField(upload_to='signatures/', null=True, blank=True, verbose_name="Signature")
-    stamp = models.ImageField(upload_to='stamps/', null=True, blank=True, verbose_name="Stamp")
+    signature = models.ImageField(upload_to='signatures/', null=True, verbose_name="Signature")
+    stamp = models.ImageField(upload_to='stamps/', null=True, verbose_name="Stamp")
 
     def save(self, *args, **kwargs):
         if (self.instructor not in self.diving_log.dive_group.divers.all()

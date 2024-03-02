@@ -3,6 +3,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -42,6 +44,19 @@ class AuthUserViewSet(viewsets.ViewSet):
 
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def refresh(self, request):
+        """
+        Custom refresh action to get a new access token using the refresh token.
+        """
+        serializer = TokenRefreshSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['get'], permission_classes=[AllowAny])
     def logout(self, request):
         logout(request)
@@ -59,4 +74,3 @@ class AuthUserViewSet(viewsets.ViewSet):
         # Delete the authenticated user
         request.user.delete()
         return Response({"message": "Utilisateur supprimé avec succès"}, status=status.HTTP_204_NO_CONTENT)
-

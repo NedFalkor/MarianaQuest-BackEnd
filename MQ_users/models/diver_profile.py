@@ -9,8 +9,8 @@ class DiverProfile(models.Model):
 
     identity_photo = models.ImageField(upload_to='identity_photos/', null=True, blank=True)
 
-    last_name = models.CharField(max_length=255, blank=True)
-    first_name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
     address = models.TextField(blank=True)
     postal_code = models.CharField(max_length=10, blank=True)
     city = models.CharField(max_length=255, blank=True)

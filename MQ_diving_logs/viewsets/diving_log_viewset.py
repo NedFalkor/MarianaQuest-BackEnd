@@ -1,16 +1,25 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from MQ_diving_logs.models.diving_log import DivingLog
 from MQ_diving_logs.permissions.is_diver_permission import IsDiver
 from MQ_diving_logs.permissions.is_instructor_permission import IsInstructor
 from MQ_diving_logs.serializers.diving_log_serializer import DivingLogSerializer
+from MQ_users.models import CustomUser
 
 
 class DivingLogViewSet(viewsets.ModelViewSet):
     queryset = DivingLog.objects.all()
     serializer_class = DivingLogSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        diver_id = self.request.query_params.get('diver_id', None)
+        if diver_id is not None:
+            queryset = queryset.filter(diver=diver_id)
+        return queryset
 
     def get_permissions(self):
         if self.action in ['create']:
@@ -32,10 +41,20 @@ class DivingLogViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            request.data['status'] = 'AWAITING'  # Assuming the status should initially be 'AWAITING'
-            return super().create(request, *args, **kwargs)
+            # You could add a check here to ensure the user exists before creating a DivingLog
+            user_id = request.data.get('user')
+            if not CustomUser.objects.filter(id=user_id).exists():
+                raise ValidationError(f"User with id {user_id} does not exist.")
+
+            request.data['status'] = 'AWAITING'  # Set initial status to 'AWAITING'
+            response = super().create(request, *args, **kwargs)
+            return response
+        except ValidationError as e:
+            return Response({"error": str(e.detail)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            # It is generally not a good practice to catch generic Exceptions without re-raising.
+            # Consider logging the error and perhaps reraising a more specific exception.
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, *args, **kwargs):
         user = request.user

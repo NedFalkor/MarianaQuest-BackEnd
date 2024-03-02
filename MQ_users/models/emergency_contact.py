@@ -4,8 +4,8 @@ from MQ_users.models import DiverProfile
 
 
 class EmergencyContact(models.Model):
-    first_name = models.CharField(max_length=255, blank=True)
-    last_name = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     address = models.TextField(blank=True)
     landline = models.CharField(max_length=20, null=True, blank=True)
     mobile = models.CharField(max_length=20, null=True, blank=True)
@@ -15,7 +15,6 @@ class EmergencyContact(models.Model):
         on_delete=models.CASCADE,
         related_name='emergency_contact',
         null=True,
-        blank=True
     )
 
     def __str__(self):

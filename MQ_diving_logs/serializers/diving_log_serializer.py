@@ -5,6 +5,8 @@ from MQ_diving_logs.models.diving_log import DivingLog
 
 
 class DivingLogSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = DivingLog
         fields = '__all__'

@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status, permissions
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 
 from MQ_users.models import EmergencyContact
@@ -12,11 +13,9 @@ class DiverProfileViewSet(viewsets.ModelViewSet):
     queryset = DiverProfile.objects.all()
     serializer_class = DiverProfileSerializer
     permission_classes = [IsOwnerOrAdmin]
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get_permissions(self):
-        """
-        Instance et renvoie la liste des permissions que ce viewset nécessite.
-        """
         if self.action in ['update', 'partial_update', 'destroy']:
             permission_classes = [IsOwnerOrAdmin]
         else:
@@ -25,6 +24,7 @@ class DiverProfileViewSet(viewsets.ModelViewSet):
 
     # Create
     def create(self, request, *args, **kwargs):
+        # Pass 'request.data' which includes POST data and 'request.FILES' which includes file data
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             emergency_contact_data = serializer.validated_data.pop('emergency_contact', None)
@@ -36,11 +36,15 @@ class DiverProfileViewSet(viewsets.ModelViewSet):
                     EmergencyContact.objects.create(diver_profile=diver_profile,
                                                     **emergency_contact_serializer.validated_data)
                 else:
-                    diver_profile.delete()  # Rollback the diver profile creation
+                    # If emergency contact is invalid, delete the diver profile and return the errors
+                    diver_profile.delete()
                     return Response(emergency_contact_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+            # If everything is valid, return the created diver profile data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # If there are errors, return them
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Read
     def list(self, request, *args, **kwargs):

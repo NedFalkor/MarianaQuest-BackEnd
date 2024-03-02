@@ -21,6 +21,7 @@ auth_user_urlpatterns = [
     path('login/', AuthUserViewSet.as_view({'post': 'login'}), name='auth-login'),
     path('logout/', AuthUserViewSet.as_view({'post': 'logout'}), name='auth-logout'),
     path('delete_account/', AuthUserViewSet.as_view({'delete': 'delete_account'}), name='auth-delete-account'),
+    path('token/refresh/', AuthUserViewSet.as_view({'post': 'refresh'}), name='auth-refresh-token'),
 ]
 
 # Including default router URLs and custom URLs
